@@ -1,0 +1,14 @@
+import(rscala)
+
+importFrom("grDevices", "dev.list", "dev.size")
+importFrom("graphics", "axis", "legend", "lines", "mtext", "par", "plot", "rect", "text")
+importFrom("stats", "var")
+
+export("bamboo.priorNonInfo")
+#export("bamboo.priorMM")
+export("bamboo.priorMSA")
+export("bamboo.likelihood")
+export("bamboo.estimate")
+
+S3method("plot", "bamboo.estimate")
+

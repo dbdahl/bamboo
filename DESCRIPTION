@@ -1,0 +1,11 @@
+Package: bamboo
+Type: Package
+Title: Protein Secondary Structure Prediction Using the Bamboo Method
+Version: 0.9.15
+Date: 2017-05-12
+Authors@R: person(given="David B.",family="Dahl",role=c("aut","cre"),email="dahl@stat.byu.edu")
+Depends: R (>= 2.10)
+Imports: rscala (>= 2.1.1)
+Description: Implementation of the methods described in the paper Li, Dahl, Vannucci, Joo, and Tsai (2014), Bayesian Model of Protein Primary Sequence for Secondary Structure Prediction, PLOS ONE, 9(10), e109832.
+LazyData: true
+License: GPL-3
