@@ -11,8 +11,6 @@ This validation dataset gives the names, the primary structure (amino acid seque
 \item primary: protein primary structure (amino acid sequence) in 20 letters denoting the 20 amino acids;
 \item hetc: secondary structure in 4 letters denoting the 4 structure types: helix (h), strand (e), turn (t) and coil (c).
 }}
-\source{Moult J, Fidelis K, Kryshtafovych A, Tramontano A (2011) Critical assessment of methods of protein structure prediction (casp) round ix. \emph{Proteins: Structure, Function, and Bioinformatics} 79: 1-5.}
-\references{
-Q. Li, D. B. Dahl, M. Vannucci, H. Joo, J. W. Tsai (2014), Bayesian Model of Protein Primary Sequence for Secondary Structure Prediction, PLOS ONE, 9(10), e109832.
-}
+\source{Moult J, Fidelis K, Kryshtafovych A, Tramontano A (2011) Critical assessment of methods of protein structure prediction (casp) round ix. \emph{Proteins: Structure, Function, and Bioinformatics} 79: 1-5. <DOI:10.1002/prot.23200>}
+\references{Q. Li, D. B. Dahl, M. Vannucci, H. Joo, J. W. Tsai (2014), Bayesian Model of Protein Primary Sequence for Secondary Structure Prediction, PLOS ONE, 9(10), e109832. <DOI:10.1371/journal.pone.0109832>}
 \keyword{datasets}

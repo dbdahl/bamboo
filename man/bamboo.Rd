@@ -46,9 +46,7 @@ bamboo.estimate(likelihood,prior,nSamples,dropFirst,initialState=NULL,
   \item{mapState}{The estimated secondary structure state using the maximum a posterior (MAP) method that returns the visited state that maximizes the posterior probability.}
   \item{marginalProbabilities}{A matrix of marginal probabilities of each state for each position.}
 }
-\references{
-Q. Li, D. B. Dahl, M. Vannucci, H. Joo, J. W. Tsai (2014), Bayesian Model of Protein Primary Sequence for Secondary Structure Prediction, PLOS ONE, 9(10), e109832.
-}
+\references{Q. Li, D. B. Dahl, M. Vannucci, H. Joo, J. W. Tsai (2014), Bayesian Model of Protein Primary Sequence for Secondary Structure Prediction, PLOS ONE, 9(10), e109832. <DOI:10.1371/journal.pone.0109832>}
 \author{
 David B. Dahl \email{dahl@stat.byu.edu}
 }

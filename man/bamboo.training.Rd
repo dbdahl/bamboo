@@ -12,7 +12,5 @@ This training dataset gives the names, the primary structure (amino acid sequenc
 \item hetc: secondary structure in 4 letters denoting the 4 structure types: helix (H), strand (E), turn (T) and coil (C).
 }}
 \source{Chandonia JM, Hon G, Walker NS, Conte LL, Koehl P, et al. (2004) The astral compendium in 2004. \emph{Nucleic Acids Research} 32: D189-D192}
-\references{
-Q. Li, D. B. Dahl, M. Vannucci, H. Joo, J. W. Tsai (2014), Bayesian Model of Protein Primary Sequence for Secondary Structure Prediction, PLOS ONE, 9(10), e109832.
-}
+\references{Q. Li, D. B. Dahl, M. Vannucci, H. Joo, J. W. Tsai (2014), Bayesian Model of Protein Primary Sequence for Secondary Structure Prediction, PLOS ONE, 9(10), e109832. <DOI:10.1371/journal.pone.0109832>}
 \keyword{datasets}
