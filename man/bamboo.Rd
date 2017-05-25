@@ -57,7 +57,7 @@ data(bamboo.training,
      bamboo.MSA.casp9,
      bamboo.MSA.astral30)
 
-\dontrun{
+\donttest{
 ## Be patient, this example can take several seconds on a fast computer.
 likelihood <- bamboo.likelihood(bamboo.training[,"primary"],bamboo.training[,"hetc"],force=TRUE)
 
