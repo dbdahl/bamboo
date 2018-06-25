@@ -1,8 +1,8 @@
 .onLoad <- function(libname, pkgname) {
-  .rscalaPackage(pkgname,heap.maximum="512M")
+  scalaPackage(pkgname,function(s) s + 'import org.ddahl.bamboo._')
 }
 
 .onUnload <- function(libpath) {
-  .rscalaPackageUnload()
+  scalaPackageUnload()
 }
 

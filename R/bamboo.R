@@ -9,13 +9,13 @@ bamboo.priorMSA <- function(countsMatrix,alpha=c(1,1,1,1)) {
     if ( ncol(y) == 4 ) y <- cbind(y,0,0,0)
     storage.mode(y) <- "integer"
     ##rJava## .jcall(.jnew("org/ddahl/bamboo/PriorMSA$"),"Lorg/ddahl/bamboo/PriorMSA;","apply",.jarray(y,dispatch=TRUE),as.double(alpha))
-    s$.org.ddahl.bamboo.PriorMSA$apply(y,alpha)
+    s$PriorMSA(y,alpha)
   }
 }
 
 bamboo.priorNonInfo <- function() {
   ##rJava## .jcall(.jnew("org/ddahl/bamboo/PriorNoHE$"),"Lorg/ddahl/bamboo/PriorNoHE;","apply")
-  s$.org.ddahl.bamboo.PriorNoHE$apply()
+  s * 'PriorNoHE()'
 }
 
 deduce.model <- function(secondary) {
@@ -28,13 +28,13 @@ bamboo.priorMM <- function(secondary,order=(1:9)[7],countsFile=NA,force=FALSE,wa
   model <- deduce.model(secondary)
   priorStr <- paste("PriorMM",order,sep="")
   ##rJava## priorClass <- .jnew(paste("org/ddahl/bamboo/",priorStr,"$",sep=""))
-  priorClass <- paste("org.ddahl.bamboo.",priorStr,sep="")
+  priorClass <- priorStr
   if ( is.na(countsFile) ) countsFile <- paste(model,priorStr,sep=.Platform$file.sep)
   ##rJava## bag <- .jcall(.jnew("org/ddahl/bamboo/BagOfPMFs$"),"Lorg/ddahl/bamboo/BagOfPMFs;","apply",FALSE)
-  bag <- s$.org.ddahl.bamboo.BagOfPMFs$apply(FALSE)
+  bag <- s$BagOfPMFs(FALSE)
   ##rJava## priorSignature <- paste("Lorg/ddahl/bamboo/",priorStr,";",sep="")
   ##rJava## prior <- .jcall(priorClass,priorSignature,"apply",bag)
-  prior <- s$do(priorClass)$apply(bag)
+  prior <- s(bag=bag) * paste0(priorClass,"(bag)")
   if ( force || ! file.exists(countsFile) ) {
     ##rJava## .jcall(prior,"V","count",secondary,countsFile)
     prior$count(secondary,countsFile)
@@ -42,9 +42,9 @@ bamboo.priorMM <- function(secondary,order=(1:9)[7],countsFile=NA,force=FALSE,wa
     if ( warn ) warning("Using existing counts file, so ignoring secondary argument. Suppress this warning with warn=FALSE.")
   }
   ##rJava## bag <- .jcall(.jnew("org/ddahl/bamboo/BagOfPMFs$"),"Lorg/ddahl/bamboo/BagOfPMFs;","apply",countsFile,FALSE)
-  bag <- s$.org.ddahl.bamboo.BagOfPMFs$apply(countsFile,FALSE)
+  bag <- s$BagOfPMFs(countsFile,FALSE)
   ##rJava## x <- .jcall(priorClass,priorSignature,"apply",bag)
-  x <- s$do(priorClass)$apply(bag)
+  x <- s(bag=bag) * paste0(priorClass,"(bag)")
   x
 }
 
@@ -52,17 +52,17 @@ bamboo.likelihood.engine <- function(string,aa=NA) {
   x <- if ( ! is.na(aa) ) {
     if ( ! all(grepl("^[ARNDCEQGHILKMFPSTWYV]+$",aa)) ) stop("Amino acid sequence must use only A,R,N,D,C,E,Q,G,H,I,L,K,M,F,P,S,T,W,Y,V.")
     ##rJava## aaObj <- .jcall(.jnew("org/ddahl/bamboo/AminoAcidSequence$"),"Lorg/ddahl/bamboo/AminoAcidSequence;","apply",aa)
-    aaObj <- s$.org.ddahl.bamboo.AminoAcidSequence$apply(aa)
+    aaObj <- s$AminoAcidSequence(aa)
     ##rJava## .jcall(.jnew("org/ddahl/bamboo/Likelihood$"),"Lorg/ddahl/bamboo/Likelihood;","apply",string,aaObj)
-    s$.org.ddahl.bamboo.Likelihood$apply(string,aaObj)
+    s$Likelihood(string,aaObj)
   } else {
     ##rJava## factory <- .jcall("org/ddahl/bamboo/Likelihood","Lscala/Function1;","factory",string)
-    factory <- s$.org.ddahl.bamboo.Likelihood$factory(string)
+    factory <- s$Likelihood.factory(string)
     ##rJava## aasd <- .jnew("org/ddahl/bamboo/AminoAcidSequence$")
     function(aa) {
       if ( ! all(grepl("^[ARNDCEQGHILKMFPSTWYV]+$",aa)) ) stop("Amino acid sequence must use only A,R,N,D,C,E,Q,G,H,I,L,K,M,F,P,S,T,W,Y,V.")
       ##rJava## aaObj <- .jcall(aasd,"Lorg/ddahl/bamboo/AminoAcidSequence;","apply",aa)
-      aaObj <- s$.org.ddahl.bamboo.AminoAcidSequence$apply(aa)
+      aaObj <- s$AminoAcidSequence(aa)
       ##rJava## .jcall(factory,"Lorg/ddahl/bamboo/Likelihood;","apply",aaObj)
       factory$apply(aaObj)
     }
@@ -106,14 +106,14 @@ bamboo.estimate <- function(likelihood,prior,nSamples,dropFirst,initialState=NUL
     } else stop("Unexpected model.")
   } else if ( nchar(initialState) != n ) stop("Length of initial state is not compatible with the likelihood.")
   ##rJava## stateObj <- .jcall("org/ddahl/bamboo/Bamboo","Lorg/ddahl/bamboo/Bamboo;","apply",initialState)
-  stateObj <- s$.org.ddahl.bamboo.Bamboo$apply(initialState)
+  stateObj <- s$Bamboo(initialState)
   ##rJava## prior <- .jcast(prior,"org/ddahl/bamboo/Prior")
   ##rJava## result <- .jcall("org/ddahl/bamboo/Estimate","Lorg/ddahl/bamboo/MCMCResults;","apply",likelihood,prior,stateObj,as.integer(nSamples),as.integer(dropFirst),as.logical(doLeastSquaresEstimation),as.logical(dumpStates))
-  result <- s$.org.ddahl.bamboo.Estimate$apply(likelihood,prior,stateObj,as.integer(nSamples),as.integer(dropFirst),as.logical(doLeastSquaresEstimation),as.logical(dumpStates))
+  result <- s$Estimate(likelihood,prior,stateObj,as.integer(nSamples),as.integer(dropFirst),as.logical(doLeastSquaresEstimation),as.logical(dumpStates))
   ##rJava## marginalProbabilities = .jevalArray(.jcall(result,"[[D","marginalProbabilities",evalArray=FALSE),simplify=TRUE)
   marginalProbabilities = result$marginalProbabilities()
   ##rJava## colnames(marginalProbabilities) <- .jcall("org/ddahl/bamboo/package","[S","SSOrder")
-  colnames(marginalProbabilities) <- s$.org.ddahl.bamboo$SSOrder()
+  colnames(marginalProbabilities) <- s$SSOrder()
   x <- list(
     ##rJava## countTotal      = .jcall(result,"I","countTotal"),
     countTotal      = result$countTotal(),
@@ -122,13 +122,13 @@ bamboo.estimate <- function(likelihood,prior,nSamples,dropFirst,initialState=NUL
     ##rJava## countAccepted   = .jcall(result,"I","countAccepted"),
     countAccepted   = result$countAccepted(),
     ##rJava## mapState        = .jcall(.jcall("org/ddahl/bamboo/Bamboo","Lscala/collection/immutable/List;","toSequence",.jcall(result,"Lscala/collection/immutable/List;","mapState")),"S","mkString",""),
-    mapState        = s$.org.ddahl.bamboo.Bamboo$toSequence(result$mapState())$mkString(""),
+    mapState        = s$Bamboo.toSequence(result$mapState())$mkString(""),
     ##rJava## maxLogPosterior = .jcall(result,"D","maxLogPosterior"),
     maxLogPosterior = result$maxLogPosterior(),
     ##rJava## mpState         = .jcall(.jcall("org/ddahl/bamboo/Bamboo","Lscala/collection/immutable/List;","toSequence",.jcall(result,"Lscala/collection/immutable/List;","mpState")), "S","mkString",""),
-    mpState         = s$.org.ddahl.bamboo.Bamboo$toSequence(result$mpState())$mkString(""),
+    mpState         = s$Bamboo.toSequence(result$mpState())$mkString(""),
     ##rJava## lsState         = .jcall(.jcall("org/ddahl/bamboo/Bamboo","Lscala/collection/immutable/List;","toSequence",.jcall(result,"Lscala/collection/immutable/List;","lsState")), "S","mkString",""),
-    lsState         = s$.org.ddahl.bamboo.Bamboo$toSequence(result$lsState())$mkString(""),
+    lsState         = s$Bamboo.toSequence(result$lsState())$mkString(""),
     marginalProbabilities = marginalProbabilities[,c("H","E","T","C")]
   )
   class(x) <- "bamboo.estimate"
