@@ -2,7 +2,7 @@ Package: bamboo
 Type: Package
 Title: Protein Secondary Structure Prediction Using the Bamboo Method
 Version: 0.9.20
-Date: 2018-06-26
+Date: 2018-06-28
 Description: Implementation of the Bamboo methods described in Li, Dahl, Vannucci, Joo, and Tsai (2014) <DOI:10.1371/journal.pone.0109832>.
 Authors@R: person(given="David B.",family="Dahl",role=c("aut","cre"),email="dahl@stat.byu.edu")
 URL: https://github.com/dbdahl/bamboo
