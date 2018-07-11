@@ -15,7 +15,7 @@ bamboo.priorMSA <- function(countsMatrix,alpha=c(1,1,1,1)) {
 
 bamboo.priorNonInfo <- function() {
   ##rJava## .jcall(.jnew("org/ddahl/bamboo/PriorNoHE$"),"Lorg/ddahl/bamboo/PriorNoHE;","apply")
-  s * 'PriorNoHE()'
+  s ^ 'PriorNoHE()'
 }
 
 deduce.model <- function(secondary) {
@@ -34,7 +34,7 @@ bamboo.priorMM <- function(secondary,order=(1:9)[7],countsFile=NA,force=FALSE,wa
   bag <- s$BagOfPMFs(FALSE)
   ##rJava## priorSignature <- paste("Lorg/ddahl/bamboo/",priorStr,";",sep="")
   ##rJava## prior <- .jcall(priorClass,priorSignature,"apply",bag)
-  prior <- s(bag=bag) * paste0(priorClass,"(bag)")
+  prior <- s(bag=bag) ^ paste0(priorClass,"(bag)")
   if ( force || ! file.exists(countsFile) ) {
     ##rJava## .jcall(prior,"V","count",secondary,countsFile)
     prior$count(secondary,countsFile)
@@ -43,9 +43,8 @@ bamboo.priorMM <- function(secondary,order=(1:9)[7],countsFile=NA,force=FALSE,wa
   }
   ##rJava## bag <- .jcall(.jnew("org/ddahl/bamboo/BagOfPMFs$"),"Lorg/ddahl/bamboo/BagOfPMFs;","apply",countsFile,FALSE)
   bag <- s$BagOfPMFs(countsFile,FALSE)
-  ##rJava## x <- .jcall(priorClass,priorSignature,"apply",bag)
-  x <- s(bag=bag) * paste0(priorClass,"(bag)")
-  x
+  ##rJava## .jcall(priorClass,priorSignature,"apply",bag)
+  s(bag=bag) ^ paste0(priorClass,"(bag)")
 }
 
 bamboo.likelihood.engine <- function(string,aa=NA) {
@@ -64,7 +63,7 @@ bamboo.likelihood.engine <- function(string,aa=NA) {
       ##rJava## aaObj <- .jcall(aasd,"Lorg/ddahl/bamboo/AminoAcidSequence;","apply",aa)
       aaObj <- s$AminoAcidSequence(aa)
       ##rJava## .jcall(factory,"Lorg/ddahl/bamboo/Likelihood;","apply",aaObj)
-      factory$apply(aaObj)
+      factory(aaObj)
     }
   }
   x
