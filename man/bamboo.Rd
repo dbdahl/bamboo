@@ -76,5 +76,9 @@ ss <- c(
 )
 plot(fm.MSA,ss)
 }
+
+\dontshow{
+rscala::scalaSuspend(bamboo:::s)
+}
 }
 
