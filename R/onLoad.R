@@ -1,8 +1,10 @@
 .onLoad <- function(libname, pkgname) {
-  scalaPackage(pkgname,function(s) s + 'import org.ddahl.bamboo._')
+  s <- scala(pkgname)
+  scalaLazy(function(s) s + 'import org.ddahl.bamboo._')
+  assign("s",s,envir=parent.env(environment()))
 }
 
 .onUnload <- function(libpath) {
-  scalaPackageUnload()
+  close(s)
 }
 

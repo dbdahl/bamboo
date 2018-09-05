@@ -78,7 +78,7 @@ plot(fm.MSA,ss)
 }
 
 \dontshow{
-rscala::scalaSuspend(bamboo:::s)
+rscala::scalaDisconnect(bamboo:::s)
 }
 }
 
