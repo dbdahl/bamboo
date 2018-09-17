@@ -1,0 +1,5 @@
+#!/bin/bash
+
+cd bamboo.byu.edu
+vulture '.*' ../deploy
+

@@ -1,0 +1,54 @@
+#!/bin/bash
+
+set -e
+PKG_NAME=bamboo
+PKG_HOME=$(readlink -f $(dirname $(readlink -f "$0")))/..
+SBT="sbt"
+
+function usage {
+  echo "usage: $0 [ --clean ]"
+  exit 1
+}
+
+while [[ $# -gt 0 ]]
+do
+  if [[ "$1" == "--clean" ]]
+  then
+    $SBT clean
+  else
+    usage
+  fi
+  shift
+done
+
+cd "$PKG_HOME"
+bin/setup-remotes
+
+$SBT +package
+JAR=$(find target -name '*[0-9].jar' -type f -exec stat --format '%Y :%n' {} \; | sort -nr | head -1 | cut -d: -f2-)
+
+for V in 2.11 2.12
+do
+  mkdir -p  R/bamboo/inst/java/scala-$V
+  rm -rf    R/bamboo/inst/java/scala-$V/*.jar
+  cp "$(find target -name 'bamboo_'$V'-*.jar' -type f -exec stat --format '%Y :%n'     {} \; | sort -nr | head -1 | cut -d: -f2-)" R/bamboo/inst/java/scala-$V
+done
+
+$SBT packageSrc
+SRCJAR=$(find target -name '*-sources.jar' -type f -exec stat --format '%Y :%n' {} \; | sort -nr | head -1 | cut -d: -f2-)
+mkdir -p     R/bamboo/java
+cp "$SRCJAR" R/bamboo/java/bamboo-sources.jar
+
+cd "$PKG_HOME/R"
+R CMD build --resave-data="best" bamboo
+
+MAJOR=$(cat ../build.sbt | grep "version := " | cut -d '"' -f 2 | cut -d '-' -f 1)
+
+TGZ_NAME=${PKG_NAME}_$MAJOR.tar.gz
+echo $TGZ_NAME
+cp $TGZ_NAME ../deliveries
+
+R CMD INSTALL $TGZ_NAME
+R CMD check --as-cran --run-dontrun --run-donttest $TGZ_NAME
+
+

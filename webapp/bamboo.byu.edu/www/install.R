@@ -1,0 +1,7 @@
+install.packages("bamboo")
+cat("\n\n*********\n")
+cat("The 'bamboo' package is now installed.\n")
+cat("Load the package with \"library('bamboo')\"\n")
+cat("Usage is demonstrated by \"example(bamboo,run.dontrun=TRUE)\" after loading the package.\n")
+cat("The paper describing the methods is available here: http://dx.plos.org/10.1371/journal.pone.0109832\n")
+cat("*********\n\n")

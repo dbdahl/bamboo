@@ -1,0 +1,40 @@
+#!/bin/bash
+
+function usage {
+  echo "usage: $0 [ --install]"
+  exit 1
+}
+
+FULL=false
+
+if [[ $# -gt 0 ]]
+then
+  if [[ $# -ne 1 ]]
+  then
+    usage
+  else
+    if [[ "$1" != "--install" ]]
+    then
+      usage
+    else
+      FULL=true
+    fi
+  fi
+else
+  echo "note: use '$0 --install' if you also want to install the R packages."
+fi
+
+cd $(dirname $(readlink -f "$0"))
+
+chmod a+rwX bamboo.byu.edu/www/*
+
+rsync -aL --exclude 'log-*' --delete bamboo.byu.edu rstudio.byu.edu:ShinyApps/
+
+if [[ "$FULL" == true ]]
+then
+  ssh rstudio.byu.edu ShinyApps/bamboo.byu.edu/www/install-on-shiny-server
+fi
+
+
+ssh rstudio.byu.edu touch ShinyApps/bamboo.byu.edu/restart.txt
+

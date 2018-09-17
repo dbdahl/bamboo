@@ -1,0 +1,11 @@
+#!/usr/bin/env Rscript
+
+options(repos=structure(c(CRAN="https://cloud.r-project.org/")))
+
+dir.create("~/local/R/packages",recursive=TRUE,showWarnings=FALSE)
+
+.libPaths('~/local/R/packages')
+
+install.packages("rscala")
+install.packages("ShinyApps/bamboo.byu.edu/www/bamboo.tar.gz",repos=NULL,type="source")
+
