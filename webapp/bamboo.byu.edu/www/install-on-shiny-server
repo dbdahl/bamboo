@@ -6,6 +6,4 @@ dir.create("~/local/R/packages",recursive=TRUE,showWarnings=FALSE)
 
 .libPaths('~/local/R/packages')
 
-install.packages("rscala")
-install.packages("ShinyApps/bamboo.byu.edu/www/bamboo.tar.gz",repos=NULL,type="source")
-
+source("https://dahl.byu.edu/latest/bamboo")

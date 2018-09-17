@@ -5,4 +5,6 @@
 /R/bamboo/inst/java/scala-*/bamboo_*.jar
 /R/bamboo.Rcheck
 /R/bamboo_*.tar.gz
-
+/webapp/bamboo.byu.edu/log/
+/webapp/bamboo.byu.edu/.Rhistory
+.Rproj.user

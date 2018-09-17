@@ -13,13 +13,7 @@ logEntry("Starting server.")
 
 .libPaths("~/local/R/packages")
 
-if ( is.null(rscala::scalaInfo()) ) {
-  logEntry("Oops, 'scala' is not found.  Trying to install.")
-  rscala::scalaInstall()
-}
-
 library(bamboo)
-#Sys.setenv(JAVA_HOME="/usr/java/jdk1.7.0_21")
 data(bamboo.training)
 likelihood <- bamboo.likelihood(bamboo.training[,"primary"],bamboo.training[,"hetc"],force=FALSE,warn=FALSE)
 

@@ -51,4 +51,9 @@ cp $TGZ_NAME ../deliveries
 R CMD INSTALL $TGZ_NAME
 R CMD check --as-cran --run-dontrun --run-donttest $TGZ_NAME
 
+cd ..
+
+rsync --chmod=644 deliveries/$TGZ_NAME dahl.byu.edu:public
+ssh dahl.byu.edu "cd public && ln -f -s $TGZ_NAME bamboo_LATEST.tar.gz"
+echo -e "####\nPosted to\n  https://dahl.byu.edu/public/$TGZ_NAME\n####"
 
