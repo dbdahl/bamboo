@@ -24,20 +24,7 @@ done
 cd "$PKG_HOME"
 bin/setup-remotes
 
-$SBT +package
-JAR=$(find target -name '*[0-9].jar' -type f -exec stat --format '%Y :%n' {} \; | sort -nr | head -1 | cut -d: -f2-)
-
-for V in 2.11 2.12
-do
-  mkdir -p  R/bamboo/inst/java/scala-$V
-  rm -rf    R/bamboo/inst/java/scala-$V/*.jar
-  cp "$(find target -name 'bamboo_'$V'-*.jar' -type f -exec stat --format '%Y :%n'     {} \; | sort -nr | head -1 | cut -d: -f2-)" R/bamboo/inst/java/scala-$V
-done
-
-$SBT packageSrc
-SRCJAR=$(find target -name '*-sources.jar' -type f -exec stat --format '%Y :%n' {} \; | sort -nr | head -1 | cut -d: -f2-)
-mkdir -p     R/bamboo/java
-cp "$SRCJAR" R/bamboo/java/bamboo-sources.jar
+R -e 'rscala::scalaSBT()'
 
 cd "$PKG_HOME/R"
 R CMD build --resave-data="best" bamboo

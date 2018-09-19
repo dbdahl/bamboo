@@ -1,7 +1,7 @@
 /target
 /project/target
 /deliveries
-/R/bamboo/java/bamboo-sources.jar
+/R/bamboo/java/bamboo_*-sources.jar
 /R/bamboo/inst/java/scala-*/bamboo_*.jar
 /R/bamboo.Rcheck
 /R/bamboo_*.tar.gz
