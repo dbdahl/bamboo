@@ -24,7 +24,7 @@ done
 cd "$PKG_HOME"
 bin/setup-remotes
 
-R -e 'rscala::scalaSBT()'
+R --slave -e 'rscala::scalaSBT()'
 
 cd "$PKG_HOME/R"
 R CMD build --resave-data="best" bamboo
