@@ -2,9 +2,9 @@ name := "bamboo"
 
 version := "0.9.23-SNAPSHOT"
 
-scalaVersion := "2.12.6"
+scalaVersion := "2.12.7"
 
-crossScalaVersions := Seq("2.11.12", "2.12.6")
+crossScalaVersions := Seq("2.11.12", "2.12.7")
 
 // ALL = Do counts,  OFF = No counts
 // scalacOptions ++= Seq( "-deprecation", "-unchecked", "-Xelide-below", "OFF" )
