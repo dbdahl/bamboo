@@ -29,7 +29,7 @@ R --slave -e 'rscala::scalaSBT()'
 cd "$PKG_HOME/R"
 R CMD build --resave-data="best" bamboo
 
-MAJOR=$(cat ../build.sbt | grep "version := " | cut -d '"' -f 2 | cut -d '-' -f 1)
+MAJOR=$(cat ../build.sbt | grep "^\s*version := " | cut -d '"' -f 2 | cut -d '-' -f 1)
 
 TGZ_NAME=${PKG_NAME}_$MAJOR.tar.gz
 echo $TGZ_NAME
