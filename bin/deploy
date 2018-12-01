@@ -1,6 +1,0 @@
-#!/usr/bin/env Rscript
-
-install.packages("rscala")
-devtools::install_github("dbdahl/bamboo")
-rsconnect::deployApp('../webapp/bamboo.byu.edu',appName="bamboo")
-
