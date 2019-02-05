@@ -1,46 +1,128 @@
 #!/bin/bash
 
 set -e
-PKG_NAME=bamboo
-PKG_HOME=$(readlink -f $(dirname $(readlink -f "$0")))/..
-SBT="sbt"
 
-function usage {
-  echo "usage: $0 [ --clean ]"
+## For debugging
+# set -x
+# trap read debug
+
+function usage() {
+  echo "Usage: $0 [ -s -r -c -f -p ]"
+  echo "       where -s turns on Scala compile,"
+  echo "             -r builds the R package,"
+  echo "             -c does build and checking."
+  echo "             -f does build and full checking."
+  echo "             -p does build, full check, and posts to web."
   exit 1
 }
 
-while [[ $# -gt 0 ]]
-do
-  if [[ "$1" == "--clean" ]]
-  then
-    $SBT clean
-  else
-    usage
-  fi
-  shift
-done
+if [[ $# -eq 0 ]]
+then
+  DEFAULT="-r"
+  echo "Note: using default arguments: $DEFAULT"
+  set -- $DEFAULT
+fi
 
-cd "$PKG_HOME"
+TASK_SCALA=
+TASK_R=
+TASK_RCHECK=
+FLAG_POST=
+
+while getopts ":srcfp" o
+do
+  case "${o}" in
+    s)
+      TASK_SCALA=yes
+      ;;
+    r)
+      TASK_R=yes
+      ;;
+    c)
+      TASK_R=yes
+      TASK_RCHECK=yes
+      FLAG_CHECK_CRAN="--run-donttest --run-dontrun"
+      ;;
+    f)
+      TASK_SCALA=yes
+      TASK_R=yes
+      TASK_RCHECK=yes
+      FLAG_CHECK_CRAN="--as-cran --run-donttest --run-dontrun"
+      ;;
+    p)
+      TASK_SCALA=yes
+      TASK_R=yes
+      TASK_RCHECK=yes
+      FLAG_CHECK_CRAN="--as-cran --run-donttest --run-dontrun"
+      FLAG_POST=yes
+      ;;
+    *)
+      usage
+      ;;
+  esac
+done
+shift $((OPTIND-1))
+
+if [[ $# -ne 0 ]]
+then
+  usage
+fi
+
+cd $(dirname $(readlink -f "$0"))/..
+
 bin/setup-remotes
 
-R --slave -e 'rscala::scalaSBT()'
+PKG_NAME=$(cat build.sbt | grep "^name := " | cut -d '"' -f 2)
+PKG_NAME_LOWER=$(echo $PKG_NAME | awk '{print tolower($0)}')
+PKG_VERSION=$(cat build.sbt | grep "^version := " | cut -d '"' -f 2)
 
-cd "$PKG_HOME/R"
-R CMD build --resave-data="best" bamboo
+if [[ -n "$TASK_SCALA" ]]
+then
+  R --slave -e 'rscala::scalaSBT()'
+fi
 
-MAJOR=$(cat ../build.sbt | grep "^\s*version := " | cut -d '"' -f 2 | cut -d '-' -f 1)
+# Set version number and date
+function setversion {
+  OLDWD="$PWD"
+  sed -i $SEDOPT 's/\(\s*Version\s*:\s*\)\(.*\)/\1'"$1"'/g' R/$PKG_NAME/DESCRIPTION
+  sed -i $SEDOPT 's/\(\s*Date\s*:\s*\)\(.*\)/\1'"$2"'/g' R/$PKG_NAME/DESCRIPTION
+  cd "$OLDWD"
+}
 
-TGZ_NAME=${PKG_NAME}_$MAJOR.tar.gz
-echo $TGZ_NAME
-cp $TGZ_NAME ../deliveries
+if [[ -n "$TASK_R" ]]
+then
+  set +e
+  echo $PKG_VERSION | grep -q SNAPSHOT
+  if [[ $? == 0 ]]
+  then
+    PKG_VERSION=$(echo $PKG_VERSION | sed s/SNAPSHOT/$(date +'%Y%m%d-%H%M')/g)
+  fi
+  set -e
+  setversion $PKG_VERSION $(date +'%Y-%m-%d')
+  cd R
+  R -e "devtools::document('$PKG_NAME')"
+  R CMD build --resave-data="best" $PKG_NAME
+  TGZ_NAME=${PKG_NAME}_${PKG_VERSION}.tar.gz
+  R CMD INSTALL $TGZ_NAME
+  cd ..
+  setversion "0.0.0" "1970-01-01"
+  mkdir -p deliveries
+  mv R/$TGZ_NAME deliveries
+fi
 
-R CMD INSTALL $TGZ_NAME
-R CMD check --as-cran --run-dontrun --run-donttest $TGZ_NAME
+# Check R package
+if [[ -n "$TASK_RCHECK" ]]
+then
+  cd deliveries
+  R CMD check $FLAG_CHECK_CRAN $TGZ_NAME
+  cd ..
+fi
 
-cd ..
-
-rsync --chmod=644 deliveries/$TGZ_NAME dahl.byu.edu:public
-ssh dahl.byu.edu "cd public && ln -f -s $TGZ_NAME bamboo_LATEST.tar.gz"
-echo -e "####\nPosted to\n  https://dahl.byu.edu/public/$TGZ_NAME\n####"
+if [[ -n "$FLAG_POST" ]]
+then
+  R --slave -e 'rscala::scalaSBT("+publish")'
+  rsync --chmod=644 "deliveries/$TGZ_NAME" dahl.byu.edu:public
+  ssh dahl.byu.edu "cd public && ln -f -s $TGZ_NAME ${PKG_NAME}_LATEST.tar.gz"
+  echo -e "####\nPosted to\n  https://dahl.byu.edu/public/$TGZ_NAME\n####"
+fi
+echo deliveries/$TGZ_NAME
 
