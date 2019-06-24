@@ -1,11 +1,11 @@
 name := "bamboo"
 
-version := "0.9.24.1"
-//version := "0.9.24.1-SNAPSHOT"
+//version := "0.9.24"
+version := "0.9.24-SNAPSHOT"
 
 scalaVersion := "2.12.8"
 
-crossScalaVersions := Seq("2.11.12", "2.12.8")
+crossScalaVersions := Seq("2.11.12", "2.12.8", "2.13.0")
 
 // ALL = Do counts,  OFF = No counts
 // scalacOptions ++= Seq( "-deprecation", "-unchecked", "-Xelide-below", "OFF" )

@@ -7,11 +7,14 @@ class PriorDBD private (val center: SSBlocks, val reliability: List[Double], val
   private val seq = Bamboo.toSequence(center)
 
   def apply(state: Bamboo): Double = {
-    (state.ssBlocks :+ (" ",0), (" ",0) +: state.ssBlocks).zipped.foreach( (x,y) => {
+    (state.ssBlocks :+ (" ",0)).zip((" ",0) +: state.ssBlocks).foreach { case (x,y) =>
       if ( ( x._1 == "H" ) && ( y._1 == "E" ) ) return Double.NegativeInfinity
       if ( ( x._1 == "E" ) && ( y._1 == "H" ) ) return Double.NegativeInfinity
-    })
-    alpha * (state.asSequence,seq,reliability).zipped.map( (x,y,r) => if ( x == y ) r else 0 ).sum
+    }
+    val equal = state.asSequence.zip(seq).map { case(x,y) => x == y }
+    alpha * equal.zip(reliability).map { case (x, r) =>
+      if (x) r else 0
+    }.sum
   }
 
 }

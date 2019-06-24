@@ -7,7 +7,7 @@ Description: Implementation of the Bamboo methods described in Li, Dahl, Vannucc
 Authors@R: person(given="David B.",family="Dahl",role=c("aut","cre"),email="dahl@stat.byu.edu")
 URL: https://github.com/dbdahl/bamboo
 BugReports: https://github.com/dbdahl/bamboo/issues
-Imports: rscala (>= 3.2.4)
+Imports: rscala (>= 3.2.13)
 LazyData: true
 License: GPL-3
 RoxygenNote: 6.1.1

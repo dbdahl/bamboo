@@ -29,9 +29,9 @@ class Bamboo private (val ssBlocks: SSBlocks) {
   }
 
   if ( nBlocks > 0 ) {
-    (ssBlocks :+ (" ",0), (" ",0) +: ssBlocks).zipped.foreach( (x,y) => {
-      if ( x._1 == y._1 ) throw new IllegalArgumentException("Consecutive blocks be of different types.")
-    })
+    (ssBlocks :+ (" ",0)).zip((" ",0) +: ssBlocks).foreach { case (x,y) =>
+      if ( x._1 == y._1 ) throw new IllegalArgumentException("Consecutive blocks must be of different types.")
+    }
   }
 
   def sameInstanceAs(other: Bamboo) = this eq other

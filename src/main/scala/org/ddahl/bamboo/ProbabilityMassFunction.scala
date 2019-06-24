@@ -13,7 +13,7 @@ class ProbabilityMassFunction private (logProbabilities: Array[Double]) {
     }
   }
 
-  @scala.annotation.elidable(scala.annotation.elidable.CONFIG) private def count(i: Int) {
+  @scala.annotation.elidable(scala.annotation.elidable.CONFIG) private def count(i: Int): Unit = {
     counts(i) += 1
   }
 

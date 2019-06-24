@@ -55,8 +55,11 @@ object Estimate {
     val countTotal = i-dropFirst
     val marginalProbabilities = marginalCounts.map(_.map(_.toDouble/countTotal))
     val mpState = Bamboo.toSSBlocks(marginalProbabilities.map( x => {
-        val max = x.max
-        x.indexWhere( _ == max )
+        var maxIndex = 0
+        for ( i <- x.indices ) {
+          if ( x(i) > x(maxIndex) ) maxIndex = i
+        }
+        maxIndex
       }).map(SSOrder(_)).mkString("")
     )
     var lsState = mpState

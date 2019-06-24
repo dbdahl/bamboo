@@ -5,10 +5,10 @@ class PriorMSA private (
   ) extends Prior {
 
   def apply(state: Bamboo): Double = {
-    (state.ssBlocks :+ (" ",0), (" ",0) +: state.ssBlocks).zipped.foreach( (x,y) => {
+    (state.ssBlocks :+ (" ",0)).zip((" ",0) +: state.ssBlocks).foreach { case (x,y) =>
       if ( ( x._1 == "H" ) && ( y._1 == "E" ) ) return Double.NegativeInfinity
       if ( ( x._1 == "E" ) && ( y._1 == "H" ) ) return Double.NegativeInfinity
-    })
+    }
     val t = state.asSequence.map(x => SSIndexMap(x.toString)).toArray
     if ( t.length != p.length ) throw new IllegalArgumentException()
     var sum = 0.0
