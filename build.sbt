@@ -1,7 +1,7 @@
 name := "bamboo"
 
-//version := "0.9.24"
-version := "0.9.24-SNAPSHOT"
+version := "0.9.24"
+//version := "0.9.25-SNAPSHOT"
 
 scalaVersion := "2.12.8"
 

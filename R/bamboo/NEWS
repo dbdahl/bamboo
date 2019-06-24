@@ -1,3 +1,7 @@
+0.9.24 (2019-06-19)
+  * Support for Scala 2.13.
+  * Updated to rscala 3.2.13.
+
 0.9.23 (2018-10-19)
   * Updated to rscala 3.2.2.
 
