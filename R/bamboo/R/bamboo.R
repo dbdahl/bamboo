@@ -9,12 +9,14 @@ bamboo.priorMSA <- function(countsMatrix,alpha=c(1,1,1,1)) {
     if ( ncol(y) == 4 ) y <- cbind(y,0,0,0)
     storage.mode(y) <- "integer"
     ##rJava## .jcall(.jnew("org/ddahl/bamboo/PriorMSA$"),"Lorg/ddahl/bamboo/PriorMSA;","apply",.jarray(y,dispatch=TRUE),as.double(alpha))
+    scalaEnsure()
     s$PriorMSA(y,alpha)
   }
 }
 
 bamboo.priorNonInfo <- function() {
   ##rJava## .jcall(.jnew("org/ddahl/bamboo/PriorNoHE$"),"Lorg/ddahl/bamboo/PriorNoHE;","apply")
+  scalaEnsure()
   s ^ 'PriorNoHE()'
 }
 
@@ -31,6 +33,7 @@ bamboo.priorMM <- function(secondary,order=(1:9)[7],countsFile=NA,force=FALSE,wa
   priorClass <- priorStr
   if ( is.na(countsFile) ) countsFile <- paste(model,priorStr,sep=.Platform$file.sep)
   ##rJava## bag <- .jcall(.jnew("org/ddahl/bamboo/BagOfPMFs$"),"Lorg/ddahl/bamboo/BagOfPMFs;","apply",FALSE)
+  scalaEnsure()
   bag <- s$BagOfPMFs(FALSE)
   ##rJava## priorSignature <- paste("Lorg/ddahl/bamboo/",priorStr,";",sep="")
   ##rJava## prior <- .jcall(priorClass,priorSignature,"apply",bag)
@@ -51,16 +54,19 @@ bamboo.likelihood.engine <- function(string,aa=NA) {
   x <- if ( ! is.na(aa) ) {
     if ( ! all(grepl("^[ARNDCEQGHILKMFPSTWYV]+$",aa)) ) stop("Amino acid sequence must use only A,R,N,D,C,E,Q,G,H,I,L,K,M,F,P,S,T,W,Y,V.")
     ##rJava## aaObj <- .jcall(.jnew("org/ddahl/bamboo/AminoAcidSequence$"),"Lorg/ddahl/bamboo/AminoAcidSequence;","apply",aa)
+    scalaEnsure()
     aaObj <- s$AminoAcidSequence(aa)
     ##rJava## .jcall(.jnew("org/ddahl/bamboo/Likelihood$"),"Lorg/ddahl/bamboo/Likelihood;","apply",string,aaObj)
     s$Likelihood(string,aaObj)
   } else {
     ##rJava## factory <- .jcall("org/ddahl/bamboo/Likelihood","Lscala/Function1;","factory",string)
+    scalaEnsure()
     factory <- s$Likelihood.factory(string)
     ##rJava## aasd <- .jnew("org/ddahl/bamboo/AminoAcidSequence$")
     function(aa) {
       if ( ! all(grepl("^[ARNDCEQGHILKMFPSTWYV]+$",aa)) ) stop("Amino acid sequence must use only A,R,N,D,C,E,Q,G,H,I,L,K,M,F,P,S,T,W,Y,V.")
       ##rJava## aaObj <- .jcall(aasd,"Lorg/ddahl/bamboo/AminoAcidSequence;","apply",aa)
+      scalaEnsure()
       aaObj <- s$AminoAcidSequence(aa)
       ##rJava## .jcall(factory,"Lorg/ddahl/bamboo/Likelihood;","apply",aaObj)
       factory(aaObj)
@@ -91,6 +97,7 @@ bamboo.likelihood <- function(primary,secondary,countsDirectory="HETC",force=FAL
 
 bamboo.estimate <- function(likelihood,prior,nSamples,dropFirst,initialState=NULL,doLeastSquaresEstimation=FALSE,dumpStates=FALSE) {
   ##rJava## n <- .jcall(.jcall(likelihood,"Lorg/ddahl/bamboo/AminoAcidSequence;","aa"),"I","nPositions")
+  scalaEnsure()
   n <- likelihood$aa()$nPositions()
   if ( is.null(initialState) ) {
     keyString <- paste(sort(strsplit(likelihood$blockLikelihoodMap()$keys()$mkString(),"")[[1]]),collapse="")
@@ -109,8 +116,8 @@ bamboo.estimate <- function(likelihood,prior,nSamples,dropFirst,initialState=NUL
   ##rJava## prior <- .jcast(prior,"org/ddahl/bamboo/Prior")
   ##rJava## result <- .jcall("org/ddahl/bamboo/Estimate","Lorg/ddahl/bamboo/MCMCResults;","apply",likelihood,prior,stateObj,as.integer(nSamples),as.integer(dropFirst),as.logical(doLeastSquaresEstimation),as.logical(dumpStates))
   result <- s$Estimate(likelihood,prior,stateObj,as.integer(nSamples),as.integer(dropFirst),as.logical(doLeastSquaresEstimation),as.logical(dumpStates))
-  ##rJava## marginalProbabilities = .jevalArray(.jcall(result,"[[D","marginalProbabilities",evalArray=FALSE),simplify=TRUE)
-  marginalProbabilities = result$marginalProbabilities()
+  ##rJava## marginalProbabilities <- .jevalArray(.jcall(result,"[[D","marginalProbabilities",evalArray=FALSE),simplify=TRUE)
+  marginalProbabilities <- result$marginalProbabilities()
   ##rJava## colnames(marginalProbabilities) <- .jcall("org/ddahl/bamboo/package","[S","SSOrder")
   colnames(marginalProbabilities) <- s$SSOrder()
   x <- list(
@@ -186,7 +193,7 @@ plot.bamboo.estimate <- function(x,ss=NULL,...) {
     }
     text(1.02*n,1+(header+0.1)*headerHeight,names(ss)[header],adj=c(0,0.5))
   }
-  return(invisible())
+  invisible()
 
 }
 

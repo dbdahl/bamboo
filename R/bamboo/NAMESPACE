@@ -3,7 +3,7 @@ import(rscala)
 importFrom("grDevices", "dev.list", "dev.size")
 importFrom("graphics", "axis", "legend", "lines", "mtext", "par", "plot", "rect", "text")
 importFrom("stats", "var")
-importFrom("utils", "packageVersion")
+importFrom("utils", "packageVersion", "globalVariables")
 
 export("bamboo.priorNonInfo")
 #export("bamboo.priorMM")

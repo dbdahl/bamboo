@@ -1,10 +1,19 @@
 .onLoad <- function(libname, pkgname) {
-  s <- scala(pkgname)
+  assign("s", NULL, envir=parent.env(environment()))
+  globalVariables("s")
+}
+
+scalaEnsure <- function() {
+  if ( ! is.null(s) ) return()
+  s <- scala("bamboo")
   scalaLazy(function(s) s + 'import org.ddahl.bamboo._')
-  assign("s",s,envir=parent.env(environment()))
+  env <- parent.env(environment())
+  # unlockBinding("s", env)
+  eval(parse(text=paste0('unlockBinding("s",env)')))
+  assign("s", s, envir=env)
+  lockBinding("s", env)
 }
 
 .onUnload <- function(libpath) {
-  close(s)
+  if ( ! is.null(s) ) close(s)
 }
-

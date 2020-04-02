@@ -75,10 +75,10 @@ ss <- c(
   "MSA-MP"=fm.MSA$mpState
 )
 plot(fm.MSA,ss)
-}
 
 \dontshow{
 rscala::scalaDisconnect(bamboo:::s)
+}
 }
 }
 
