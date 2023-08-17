@@ -1,9 +1,8 @@
 /target
+bin/target
 /project/target
 /project/project
 /deliveries
-/R/bamboo/java/bamboo-source.jar
-/R/bamboo/inst/java/scala-*/bamboo.jar
 /R/bamboo.Rcheck
 /R/bamboo_*.tar.gz
 /webapp/bamboo.byu.edu/log/

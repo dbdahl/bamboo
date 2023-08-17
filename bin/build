@@ -1,0 +1,25 @@
+#!/usr/bin/fish
+
+set scala_version scala-2.13
+
+cd (dirname (status --current-filename))/..
+
+set -x PATH (realpath software-stack/bin) $PATH
+
+set project_name    (sbt -Dsbt.supershell=false -error "print name"    2> /dev/null)
+set project_version (sbt -Dsbt.supershell=false -error "print version" 2> /dev/null)
+
+sbt clean package packageSrc
+
+set binary_jar (fd -I -p 'target/.*/.*[.]jar$' | grep -v 'sources[.]jar$')
+set source_jar (fd -I -p 'target/.*/.*[.]jar$' | grep    'sources[.]jar$')
+
+set binary_jar_dir R/$project_name/inst/java/$scala_version
+set source_jar_dir R/$project_name/java
+
+mkdir -p $binary_jar_dir
+mkdir -p $source_jar_dir
+
+cp $binary_jar $binary_jar_dir/$project_name.jar
+cp $source_jar $source_jar_dir/$project_name-source.jar
+
